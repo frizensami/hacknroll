@@ -105,8 +105,23 @@ function produce_timetable(array_of_array_of_mod_objs) {
       console.log("static")
       console.log(static_modules);
 
+      //convert static modules into constraints
+      constraint_static = [];
+      static_modules.forEach(function(mod) {
+        timings = mod.Timetable[0].Timings;
+        timings.forEach(function(timing) {
+            constraint_static.push({"DayText":timing.DayText, "StartTime": timing.StartTime,
+                                    "EndTime": timing.EndTime, "Type": timing.Type});
+        });
 
+      });
 
+      console.log("Static constraints");
+      console.log(constraint_static);
+      //given that we have the static constraints, cull the array of array of mod objects.
+      cullHardConstraints(constraint_static, array_of_array_of_mod_objs);
+      console.log("re-constrained mods");
+      console.log(array_of_array_of_mod_objs);
 
       /*** IMPT CODE COMMENTED OUT ***/ /*
 

@@ -285,10 +285,13 @@ function cullHardConstraints(constraints, newestComputationList) {
     var culledList = [];
 
     newestComputationList.forEach(function(module_with_baggage) {
-        module_with_baggage["Timetable"] = module_with_baggage["Timetable"].
+        var new_with_baggage = {};
+        new_with_baggage["Timetable"] = module_with_baggage["Timetable"].
                                            filter(function(slot) {
                                             return timings_fit_constraints(constraints, slot["Timings"]);
                                            });
+        new_with_baggage["ExamDate"] = module_with_baggage["ExamDate"];
+        new_with_baggage["ModuleCode"] = module_with_baggage["ModuleCode"];
         //if this module has 0 possible slots with hard constraints, this setup is impossibru
         if (module_with_baggage["Timetable"].length <= 0) {
             newestComputationList["impossible"] = true;
@@ -611,25 +614,29 @@ completionChecker = setInterval(function(){
         if (moduleJsonList.length == moduleList.length)
         {
             window.clearInterval(completionChecker);
+
             var computationList = buildComputationList(moduleJsonList);
             console.log("Computation List: ");
             console.log(computationList);
+
             console.log("constraints");
             console.log(constraints);
+
             console.log("With constraints");
-            console.log(cullHardConstraints(constraints, computationList));
+            var culledList = cullHardConstraints(constraints, computationList)
+            console.log(culledList);
 
             console.log("permutations");
-            console.log(computationList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+            console.log(culledList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
                 return prev * cur;}));
 
 
-            console.log("producing timetable");
-            console.log(produce_timetable(computationList));
+            //console.log("producing timetable");
+            //console.log(produce_timetable(culledList));
 
-
-            //console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
-            //            computationList));
+            console.log("Culled List 1400-1600: ");
+            console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
+                        computationList));
             //carry on with rest of program
             //this is the new main executing point
 
