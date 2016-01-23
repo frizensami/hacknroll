@@ -1,0 +1,11 @@
+.DS_Store
+.sass-cache
+.tmp
+.vagrant
+app/bower_components
+vendor
+app/vendor
+dist
+node_modules
+secrets.json
+npm-debug.log

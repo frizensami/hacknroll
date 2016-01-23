@@ -1,0 +1,146 @@
+{
+  "name": "nusmods",
+  "version": "0.3.0",
+  "description": "NUS CORS Module Finder & Timetable Builder (Unofficial)",
+  "homepage": "https://github.com/nusmodifications/nusmods",
+  "author": {
+    "name": "Eu Beng Hee",
+    "email": "beng@benghee.eu"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nusmodifications/nusmods.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/nusmodifications/nusmods/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "backbone": "~1.2.1",
+    "backbone.babysitter": "~0.1.8",
+    "backbone.marionette": "~2.4.2",
+    "backbone.select": "~1.3.1",
+    "backbone.wreqr": "~1.3.3",
+    "bluebird": "~2.9.32",
+    "d3": "~3.5.6",
+    "fastclick": "~1.0.6",
+    "jquery": "~2.1.4",
+    "marked": "~0.3.3",
+    "moment": "~2.10.3",
+    "mousetrap": "~1.5.3",
+    "qs": "~4.0.0",
+    "raven-js": "~1.1.19",
+    "spin.js": "~2.3.1",
+    "underscore": "~1.8.3",
+    "zeroclipboard": "~2.2.0"
+  },
+  "devDependencies": {
+    "browserify": "~10.2.4",
+    "browserify-shim": "~3.8.9",
+    "connect-modrewrite": "~0.8.1",
+    "grunt": "~0.4.5",
+    "grunt-autoprefixer": "~3.0.3",
+    "grunt-browserify": "~3.8.0",
+    "grunt-concurrent": "~2.0.0",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-concat": "~0.5.1",
+    "grunt-contrib-connect": "~0.10.1",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-cssmin": "~0.12.3",
+    "grunt-contrib-htmlmin": "~0.4.0",
+    "grunt-contrib-imagemin": "~0.9.4",
+    "grunt-contrib-jshint": "~0.11.2",
+    "grunt-contrib-uglify": "~0.9.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-mocha": "~0.4.13",
+    "grunt-newer": "~1.1.1",
+    "grunt-rev": "~0.1.0",
+    "grunt-rsync": "~0.6.2",
+    "grunt-sass": "^1.0.0",
+    "grunt-svgmin": "~2.0.1",
+    "grunt-usemin": "~3.0.0",
+    "handlebars": "~3.0.3",
+    "hbsfy": "~2.2.1",
+    "jshint-stylish": "~2.0.1",
+    "load-grunt-tasks": "~3.2.0",
+    "time-grunt": "~1.2.1"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "private": true,
+  "browserify": {
+    "transform": [
+      "browserify-shim",
+      "hbsfy"
+    ]
+  },
+  "browser": {
+    "bootstrap/affix": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix.js",
+    "bootstrap/alert": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert.js",
+    "bootstrap/button": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button.js",
+    "bootstrap/collapse": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js",
+    "bootstrap/dropdown": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js",
+    "bootstrap/popover": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js",
+    "bootstrap/scrollspy": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy.js",
+    "bootstrap/tab": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab.js",
+    "bootstrap/tooltip": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js",
+    "bootstrap/transition": "./app/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition.js",
+    "jquery-ui-touch-punch": "./app/bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.js",
+    "jquery-ui/core": "./app/bower_components/jquery.ui/ui/core.js",
+    "jquery-ui/draggable": "./app/bower_components/jquery.ui/ui/draggable.js",
+    "jquery-ui/droppable": "./app/bower_components/jquery.ui/ui/droppable.js",
+    "jquery-ui/mouse": "./app/bower_components/jquery.ui/ui/mouse.js",
+    "jquery-ui/widget": "./app/bower_components/jquery.ui/ui/widget.js",
+    "jquery.fileDownload": "./app/bower_components/jquery-file-download/src/Scripts/jquery.fileDownload.js",
+    "localforage": "./app/bower_components/localforage/dist/localforage.nopromises.js",
+    "nusmoderator": "./app/bower_components/nusmoderator/main.js",
+    "qTip2": "./app/bower_components/qtip2/jquery.qtip.js",
+    "select2": "./app/bower_components/select2/select2.js"
+  },
+  "browserify-shim": {
+    "bootstrap/collapse": {
+      "depends": [
+        "bootstrap/transition"
+      ]
+    },
+    "bootstrap/transition": {
+      "depends": [
+        "jquery:jQuery"
+      ]
+    },
+    "jquery-ui/draggable": {
+      "depends": [
+        "jquery-ui/core",
+        "jquery-ui/mouse",
+        "jquery-ui/widget"
+      ]
+    },
+    "jquery-ui/droppable": {
+      "depends": [
+        "jquery-ui/core",
+        "jquery-ui/widget",
+        "jquery-ui/mouse",
+        "jquery-ui/draggable"
+      ]
+    },
+    "jquery-ui/mouse": {
+      "depends": [
+        "jquery-ui/widget"
+      ]
+    },
+    "jquery-ui-touch-punch": {
+      "depends": [
+        "jquery-ui/mouse"
+      ]
+    },
+    "localforage": {
+      "exports": "localforage",
+      "depends": [
+        "bluebird:Promise"
+      ]
+    }
+  }
+}
