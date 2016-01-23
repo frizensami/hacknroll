@@ -241,10 +241,72 @@ function filterRedundantTimeslots(newerComputationList) {
 
 }
 
-//constraint {StartTime: "", EndTime: "", Type: "", Options: ""}
+
+function is_overlapping(x1, x2, y1, y2) {
+    //console.log("constraint start - end: " + x1 + " - " + x2);
+    //console.log("timing start - end: " + y1 + " - " + y2);
+    return Math.max(x1,y1) < Math.min(x2,y2)
+}
+
+//singular version of timings fits
+function timing_fits_constraint(constraint, timing) {
+    var isNotClash = true;
+    timing.forEach(function(timing_slot) {
+        if (is_overlapping(constraint["StartTime"], constraint["EndTime"], timing_slot["StartTime"], timing_slot["EndTime"])
+            &&
+            (constraint["DayText"] == undefined || (constraint["DayText"] == timing_slot["DayText"]))
+           ) {
+            isNotClash = false;
+            //return false;
+        }
+    });
+
+    return isNotClash;
+}
+
+//given a timing array, check if it fits the constraints provided
+function timings_fit_constraints(constraints, timing) {
+//    console.log("Timing");
+
+    var isNotClashes = true;
+    constraints.forEach(function(constraint) {
+        if ((constraint["Type"] == "Hard") && (!timing_fits_constraint(constraint, timing))) {
+            isNotClashes = false;
+            //return false;
+        }
+    });
+
+    return isNotClashes;
+}
+
+//constraint {DayText: "", StartTime: "", EndTime: "", Type: "[hard|soft]", Options: ""}
 //returns a new computation list with all modules
 function cullHardConstraints(constraints, newestComputationList) {
     var culledList = [];
+
+    newestComputationList.forEach(function(module_with_baggage) {
+        module_with_baggage["Timetable"] = module_with_baggage["Timetable"].
+                                           filter(function(slot) {
+                                            return timings_fit_constraints(constraints, slot["Timings"]);
+                                           });
+        //if this module has 0 possible slots with hard constraints, this setup is impossibru
+        if (module_with_baggage["Timetable"].length <= 0) {
+            newestComputationList["impossible"] = true;
+        }
+
+        culledList.push(module_with_baggage);
+    });
+
+
+
+    //if we find a false inside the array, return false
+    if (newestComputationList["impossible"]) {
+        return false;
+    } else {
+        //otherwise return the list
+        return culledList;
+    }
+
 
 
 }
@@ -497,12 +559,13 @@ function buildTimetablePermutationList(computationList)
 //---------------------------MAIN START-----------------------//
 
 
-function main(iYear, iSemester, iModules) {
+function main(iYear, iSemester, iModules, iConstraint) {
 
 //use get request function from above to access get request header
 var year = iYear || get('year');
 var semester =iSemester || get('semester');
 var modules = iModules || get('modules');
+var constraints = iConstraint || [];
 
 
 //check for missing get info
@@ -546,33 +609,38 @@ $.each(moduleList, function(i, item){
 completionChecker = setInterval(function(){
         //check if all modules are loaded
         if (moduleJsonList.length == moduleList.length)
-{
-        window.clearInterval(completionChecker);
-        var computationList = buildComputationList(moduleJsonList);
-        console.log("Computation List: ");
-        console.log(computationList);
-        //carry on with rest of program
-        //this is the new main executing point
+        {
+            window.clearInterval(completionChecker);
+            var computationList = buildComputationList(moduleJsonList);
+            console.log("Computation List: ");
+            console.log(computationList);
 
-        //Commenting out to try worker approach
-        //var timetablePermutationList = buildTimetablePermutationList(computationList);
-        /*
-        var ttplWorker = new Worker('/buildttpl');
-        ttplWorker.addEventListener('message', function(e){
-                console.log("From ttplWorker, final permutation list: ");
-                console.log(e.data);
+            console.log("With constraints");
+            console.log(cullHardConstraints(constraints, computationList));
+            //console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
+            //            computationList));
+            //carry on with rest of program
+            //this is the new main executing point
 
-                console.log("PROGRAM HAS ENDED!");
-        },false);
-        ttplWorker.postMessage(computationList);
-*/
-        /* Final pass during testing
-           console.log("Final countdown");
-           var someshit = eliminateIntermediates(timetablePermutationList);
-           console.log(someshit);
-           */
+            //Commenting out to try worker approach
+            //var timetablePermutationList = buildTimetablePermutationList(computationList);
+            /*
+            var ttplWorker = new Worker('/buildttpl');
+            ttplWorker.addEventListener('message', function(e){
+                    console.log("From ttplWorker, final permutation list: ");
+                    console.log(e.data);
 
-}
+                    console.log("PROGRAM HAS ENDED!");
+            },false);
+            ttplWorker.postMessage(computationList);
+    */
+            /* Final pass during testing
+               console.log("Final countdown");
+               var someshit = eliminateIntermediates(timetablePermutationList);
+               console.log(someshit);
+               */
+
+        }
 },1);
 
 //-------------------MAIN END-------------------------------//

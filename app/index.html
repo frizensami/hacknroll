@@ -91,12 +91,24 @@
     var mods = [];
     var regex = new RegExp("[?&](\\w+)\\[", 'g');
     var search_str = location.search;
+
     while (match = regex.exec(search_str)) {
       if ((mods.length == 0) || (mods.indexOf(match[1]) == -1)) mods.push(match[1]);
     }
+
+
+    var e = document.getElementById("start-time");
+    var start_time = e.options[e.selectedIndex].text;
+
+
+    var e1 = document.getElementById("end-time");
+    var end_time = e1.options[e1.selectedIndex].text;
+
+    start_day_constraint = {"StartTime": "0800", "EndTime": start_time, "Type": "Hard"}
+    end_day_constraint = {"StartTime": end_time, "EndTime": 2359, "Type": "Hard"}
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
-    console.log(main(loc[2], loc[3][3], mods.join(",")));
+    console.log(main(loc[2], loc[3][3], mods.join(","), [start_day_constraint, end_day_constraint]));
   }
   </script>
 </head>
@@ -162,8 +174,8 @@
             <div class="col-xs-7">
               <p>No lessons before</p>
             </div>
-            <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+            <div  class="col-xs-5" style="text-align: right">
+              <select id="start-time" class="selectpicker">
                 <option>No preference</option>
                 <option>0900</option>
                 <option>1000</option>
@@ -179,7 +191,7 @@
               <p>No lessons after</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id="end-time" class="selectpicker">
                 <option>No preference</option>
                 <option>1200</option>
                 <option>1300</option>
