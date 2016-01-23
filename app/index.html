@@ -56,6 +56,11 @@
   <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <script src="/scripts/jquery.popup.min.js"></script>
 
+   <!-- CORS AI SCRIPTS -->
+  <script src="/scripts/corsai/arrange.js"></script>
+  <script src="/scripts/corsai/combinatorics.js"></script>
+  <script src="/scripts/corsai/mods.js"></script>
+
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -67,6 +72,25 @@
     // Comment out to prevent double counting as pageview is
     // already sent during Backbone routing.
     // ga('send', 'pageview');
+  </script>
+
+  <script>
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+  //generates the timetable
+  function generate() {
+    loc = location.pathname.split("/");
+    var mods = [];
+    var regex = new RegExp("[?&](\\w+)\\[", 'g');
+    var search_str = location.search;
+    while (match = regex.exec(search_str)) {
+      if ((mods.length == 0) || (mods.indexOf(match[1]) == -1)) mods.push(match[1]);
+    }
+    //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
+    console.log(mods.join(","));
+    console.log(main(loc[2], loc[3][3], mods.join(",")));
+  }
   </script>
 </head>
 <body data-spy="scroll">
@@ -175,7 +199,7 @@
             </div>
           </div>
           <div style="text-align: center">
-            <button type="submit" class="btn btn-default">Generate Timetable</button>
+            <button onclick="generate()" class="btn btn-default">Generate Timetable</button>
           </div>
         </div>
 

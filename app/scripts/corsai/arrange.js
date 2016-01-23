@@ -207,6 +207,8 @@ function no_clashes_found(timetable, slot) {
     return true;
 }
 
+
+
 //check if module has redundant time slots, aka
 function filterRedundantTimeslots(newerComputationList) {
 
@@ -236,7 +238,19 @@ function filterRedundantTimeslots(newerComputationList) {
 
     return newestComputationList;
 
-    /*
+
+}
+
+//constraint {StartTime: "", EndTime: "", Type: "", Options: ""}
+//returns a new computation list with all modules
+function cullHardConstraints(constraints, newestComputationList) {
+    var culledList = [];
+
+
+}
+
+
+/* BRUTEFORCE FOR STUFF
     overallComputationList = [];
 
     //for each module in the computation list
@@ -264,8 +278,6 @@ function filterRedundantTimeslots(newerComputationList) {
     console.log("Final tt");
     console.log(overallComputationList);
     */
-}
-
 /*
 
 //get all timetable permutations for a single module (w timetable, modulecode & examdate)
