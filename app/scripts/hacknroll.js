@@ -1,0 +1,1 @@
+$('.form_popup').popup();

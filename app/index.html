@@ -48,6 +48,14 @@
   <!-- endbuild -->
   <link rel="stylesheet" id="mode">
 
+
+  <link rel="stylesheet" href="/styles/popup.css">
+  <link rel="stylesheet" href="/styles/hacknroll.css">
+
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="/scripts/jquery.popup.min.js"></script>
+
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -101,8 +109,28 @@
             </div>
           </div>
         </div> -->
+        <div style="margin-left: auto; margin-right: auto; text-align: center">
+          <button href="#inline" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
+        </div>
+        <div id="inline" style="display:none">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            </div>
+            <div style="text-align: center">
+              <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+          </form>
+        </div>
+
         <div class="content"></div>
       </div>
+
       <footer class="footer-container">
         <div class="container-fluid">
             <div class="row footer">
@@ -189,5 +217,8 @@
   <script src="/scripts/disqus-count.js"></script>
   <!-- endbuild -->
   <div id="fb-root"></div>
+  <script src="/scripts/hacknroll.js"></script>
+
+
 </body>
 </html>

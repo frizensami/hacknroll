@@ -1,0 +1,12 @@
+.popup { 
+	border-radius: 5px;
+}
+
+.btn, .btn:focus, .btn:active {
+	outline: 0 !important;
+}
+
+#inline {
+	width: 60vw;
+	height: 30vh;
+}

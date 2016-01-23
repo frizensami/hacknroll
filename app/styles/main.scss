@@ -78,6 +78,10 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 $screen-xs-min: 400px;
 $screen-xxs-max: $screen-xs-min - 1;
 
+
+
+
+
 .visible-xxs-inline {
   display: none !important;
   @media (max-width: $screen-xxs-max) {
