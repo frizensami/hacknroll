@@ -614,9 +614,20 @@ completionChecker = setInterval(function(){
             var computationList = buildComputationList(moduleJsonList);
             console.log("Computation List: ");
             console.log(computationList);
-
+            console.log("constraints");
+            console.log(constraints);
             console.log("With constraints");
             console.log(cullHardConstraints(constraints, computationList));
+
+            console.log("permutations");
+            console.log(computationList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                return prev * cur;}));
+
+
+            console.log("producing timetable");
+            console.log(produce_timetable(computationList));
+
+
             //console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
             //            computationList));
             //carry on with rest of program
