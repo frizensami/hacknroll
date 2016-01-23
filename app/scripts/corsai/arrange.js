@@ -272,6 +272,9 @@ function timings_fit_constraints(constraints, timing) {
     constraints.forEach(function(constraint) {
         if ((constraint["Type"] == "Hard") && (!timing_fits_constraint(constraint, timing))) {
             isNotClashes = false;
+            //console.log("reject");
+            //console.log(constraint);
+            //console.log(timing);
             //return false;
         }
     });
@@ -293,18 +296,18 @@ function cullHardConstraints(constraints, newestComputationList) {
         new_with_baggage["ExamDate"] = module_with_baggage["ExamDate"];
         new_with_baggage["ModuleCode"] = module_with_baggage["ModuleCode"];
         //if this module has 0 possible slots with hard constraints, this setup is impossibru
-        if (module_with_baggage["Timetable"].length <= 0) {
+        if (new_with_baggage["Timetable"].length <= 0) {
             newestComputationList["impossible"] = true;
         }
 
-        culledList.push(module_with_baggage);
+        culledList.push(new_with_baggage);
     });
 
 
 
     //if we find a false inside the array, return false
     if (newestComputationList["impossible"]) {
-        return false;
+        throw new Error("Unable to comply with constraints!");
     } else {
         //otherwise return the list
         return culledList;
@@ -626,17 +629,27 @@ completionChecker = setInterval(function(){
             var culledList = cullHardConstraints(constraints, computationList)
             console.log(culledList);
 
-            console.log("permutations");
-            console.log(culledList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+            //constraints loose enoug
+            if (culledList != false) {
+                console.log("permutations");
+                console.log(culledList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
                 return prev * cur;}));
 
+                console.log("producing timetable");
+                console.log(produce_timetable(culledList));
+            } else {
+                console.log("Error! Constraints too tight.")
+                throw new Error("Constraints too tight");
+            }
 
-            //console.log("producing timetable");
-            //console.log(produce_timetable(culledList));
 
-            console.log("Culled List 1400-1600: ");
-            console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
-                        computationList));
+
+
+
+
+            //console.log("Culled List 1400-1600: "); - USE 1010 SEM2 TO TEST
+            //console.log(cullHardConstraints([{"StartTime": "1400", "EndTime": "1600", "Type": "Hard"}],
+            //            computationList));
             //carry on with rest of program
             //this is the new main executing point
 

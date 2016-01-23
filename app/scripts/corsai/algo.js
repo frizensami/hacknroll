@@ -111,17 +111,26 @@ function produce_timetable(array_of_array_of_mod_objs) {
         timings = mod.Timetable[0].Timings;
         timings.forEach(function(timing) {
             constraint_static.push({"DayText":timing.DayText, "StartTime": timing.StartTime,
-                                    "EndTime": timing.EndTime, "Type": timing.Type});
+                                    "EndTime": timing.EndTime, "Type": "Hard"});
         });
 
       });
 
+      var dynamic_modules = array_of_array_of_mod_objs.filter(function(mod) {
+        return mod["Timetable"].length > 1;
+      });
+
       console.log("Static constraints");
       console.log(constraint_static);
+
       //given that we have the static constraints, cull the array of array of mod objects.
-      cullHardConstraints(constraint_static, array_of_array_of_mod_objs);
+      culled_arr_arr = cullHardConstraints(constraint_static, dynamic_modules);
       console.log("re-constrained mods");
-      console.log(array_of_array_of_mod_objs);
+      console.log(culled_arr_arr);
+
+      console.log("new culled permutations");
+      console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                    return prev * cur;}));
 
       /*** IMPT CODE COMMENTED OUT ***/ /*
 

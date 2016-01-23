@@ -105,6 +105,10 @@
     var e1 = document.getElementById("end-time");
     var end_time = e1.options[e1.selectedIndex].text;
 
+    //ensure that no prefs are saved properly
+    start_time = start_time == "No preference" ? "0800" : start_time;
+    end_time = end_time == "No preference" ? "2359" : end_time;
+
     start_day_constraint = {"StartTime": "0800", "EndTime": start_time, "Type": "Hard"}
     end_day_constraint = {"StartTime": end_time, "EndTime": 2359, "Type": "Hard"}
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
