@@ -809,6 +809,7 @@ function mainF(iYear, iSemester, iModules, iConstraint, iPacked) {
                     }
 
                 });
+
 								console.log("result locations");
 								console.log(result_locations);
 								var timetables_arr = result_locations;
