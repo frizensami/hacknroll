@@ -43,18 +43,22 @@ function create_timetable_array(array_of_mod_objs) {
 function score_timetable(array_of_mod_objs) {
 	var timetable_array = create_timetable_array(array_of_mod_objs);
 	var res = 0;
-	timetable_array.forEach(function(day) {
-		var start = false;
-		for (var i = 0; i < day.length; i++) {
-			var test = day[i];
-			if (!start && test === true) {
-				start = true;
-			} else if (start && test !== true) {
-				res++;
+	if (typeof timetable_array !== "undefined") {
+		timetable_array.forEach(function(day) {
+			var start = false;
+			for (var i = 0; i < day.length; i++) {
+				var test = day[i];
+				if (!start && test === true) {
+					start = true;
+				} else if (start && test !== true) {
+					res++;
+				}
 			}
-		}
-	});
-	return res;
+		});
+		return res;
+	} else {
+		return undefined;
+	}
 }
 
 function produce_timetable(culled_arr_arr, tightness) {
@@ -94,7 +98,7 @@ function produce_timetable(culled_arr_arr, tightness) {
 		while (typeof representative_array !== "undefined") {
 			var modules = take_representative(representative_array);
 			var score = score_timetable(modules);
-			if (score === score_to_be_found) {
+			if (typeof score !== "undefined" && score === score_to_be_found) {
 				return modules;
 			}
 			representative_array = next_representative(representative_array);
