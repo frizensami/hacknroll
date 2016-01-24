@@ -127,10 +127,45 @@ function produce_timetable(array_of_array_of_mod_objs) {
       culled_arr_arr = cullHardConstraints(constraint_static, dynamic_modules);
       console.log("re-constrained mods");
       console.log(culled_arr_arr);
-
+      //calculate the new problem size
       console.log("new culled permutations");
       console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
                     return prev * cur;}));
+var s = new Date().getTime();
+console.log("start: " + s);
+for (var i = 0; i < 200; i++) {
+  //try lunchtime free slots - with culled array
+      lunch_constraint = [{StartTime: "1200", EndTime: "1300", "Type": "Hard"}]
+      try {
+        lunch_culled = cullHardConstraints(lunch_constraint, array_of_array_of_mod_objs);
+        //calculate the new problem size
+        console.log("new lunch_culled permutations");
+        console.log(lunch_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                      return prev * cur;}));
+      } catch(e) {
+        console.log("Error, lunch at this time is impossible!");
+      }
+}
+console.log("End: " + (new Date().getTime() - s).toString());
+
+
+      //try free day slots - with full list, not anything else
+      days.forEach(function(day) {
+        console.log("Trying " + day);
+        day_constraint = [{"StartTime": "0800", "EndTime": "2359", "Type": "Hard", "DayText": day}]
+        try {
+          day_culled = cullHardConstraints(day_constraint, array_of_array_of_mod_objs);
+          console.log("new day_culled permutations");
+          console.log(day_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                    return prev * cur;}));
+
+        } catch(e) {
+          console.log("Error, " + day + " as free day not possible");
+        }
+
+      })
+
+
 
       /*** IMPT CODE COMMENTED OUT ***/ /*
 
