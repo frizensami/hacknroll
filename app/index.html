@@ -115,6 +115,9 @@
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
     console.log(main(loc[2], loc[3][3], mods.join(","), [start_day_constraint, end_day_constraint]));
+
+    $('.timetable_result').html("<p style='text-align: center'>Suggested Timetable</p><p style='text-align: center'><a href='#'>Timetable One</a></p><p style='text-align: center'><a href='#'>Timetable Two</a></p><p style='text-align: center'><a href='#'>Timetable Three</a></p>");
+
   }
   </script>
 </head>
@@ -159,9 +162,9 @@
           </div>
         </div> -->
         <div style="margin-left: auto; margin-right: auto; text-align: center">
-          <button href="#inline" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
+          <button href="#user_input" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
         </div>
-        <div id="inline" style="display:none">
+        <div id="user_input" style="display:none">
           <div class="form-group row" style="text-align: center">
             <label>Quickly create a timetable</label>
           </div>
@@ -305,6 +308,9 @@
                 <option>1500</option>
               </select>
             </div>
+          </div>
+          <div class="form-group row">
+            <div class="timetable_result"></div>
           </div>
           <div style="text-align: center">
             <button onclick="generate()" class="btn btn-default">Generate Timetable</button>
