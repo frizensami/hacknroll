@@ -601,6 +601,10 @@ function toComplexClassType(str) {
 			return "[SEC]";
 		case "Recitation":
 			return "[REC]";
+		case "Packaged Lecture":
+			return "[PLEC]";
+		case "Packaged Tutorial":
+			return "[PTUT]";
 		default:
 			alert("Class type not recognized: " + str)
 			break;
@@ -772,8 +776,7 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                		          query_string);
 
 
-/*
-                //try free day slots - with full list, not anything else
+               	  //try free day slots - with full list, not anything else
                 days.forEach(function(day) {
                     console.log("Trying " + day);
                     day_constraint = [{"StartTime": "0800", "EndTime": "2359", "Type": "Hard", "DayText": day}]
@@ -783,12 +786,34 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                         console.log(day_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
                             return prev * cur;}));
 
+                        var final_mods_day = produce_timetable(day_culled, iPacked);
+                        var query_string = "?";
+				               	for (var i = 0; i < final_mods_day.length; i++) {
+				               		query_string += final_mods_day[i]["ModuleCode"] +
+				               										toComplexClassType(final_mods_day[i]["LessonType"]) +
+				               										"=" +
+				               										final_mods_day[i]["ClassNo"] + "&";
+
+
+				               	}
+				               	console.log([location.protocol, '//', location.host, location.pathname].join('') +
+               		          query_string);
+
+
                     } catch(e) {
                         console.log("Error, " + day + " as free day not possible");
                     }
 
                 });
-*/
+
+
+               	return [location.protocol, '//', location.host, location.pathname].join('') +
+               		          query_string;
+
+
+
+
+
 
 
 
