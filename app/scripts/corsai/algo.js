@@ -131,9 +131,10 @@ function produce_timetable(array_of_array_of_mod_objs) {
       console.log("new culled permutations");
       console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
                     return prev * cur;}));
-var s = new Date().getTime();
-console.log("start: " + s);
-for (var i = 0; i < 200; i++) {
+
+
+
+
   //try lunchtime free slots - with culled array
       lunch_constraint = [{StartTime: "1200", EndTime: "1300", "Type": "Hard"}]
       try {
@@ -145,8 +146,7 @@ for (var i = 0; i < 200; i++) {
       } catch(e) {
         console.log("Error, lunch at this time is impossible!");
       }
-}
-console.log("End: " + (new Date().getTime() - s).toString());
+
 
 
       //try free day slots - with full list, not anything else
@@ -164,6 +164,9 @@ console.log("End: " + (new Date().getTime() - s).toString());
         }
 
       })
+
+
+
 
 
 

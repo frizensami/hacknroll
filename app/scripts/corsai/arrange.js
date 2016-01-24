@@ -297,7 +297,7 @@ function cullHardConstraints(constraints, newestComputationList) {
         new_with_baggage["ModuleCode"] = module_with_baggage["ModuleCode"];
         //if this module has 0 possible slots with hard constraints, this setup is impossibru
         if (new_with_baggage["Timetable"].length <= 0) {
-            newestComputationList["impossible"] = true;
+            culledList["impossible"] = true;
         }
 
         culledList.push(new_with_baggage);
@@ -306,7 +306,7 @@ function cullHardConstraints(constraints, newestComputationList) {
 
 
     //if we find a false inside the array, return false
-    if (newestComputationList["impossible"]) {
+    if (culledList["impossible"]) {
         throw new Error("Unable to comply with constraints!");
     } else {
         //otherwise return the list
