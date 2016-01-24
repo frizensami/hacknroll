@@ -757,6 +757,9 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                 	})
                 });
 
+                //array of timetable strings
+                var result_locations = [];
+
                 // RUN HERBERT MAGIC
                 var final_mods = produce_timetable(all_mods_after_pass, iPacked);
 								console.log("Modules:")
@@ -772,8 +775,9 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
 
                	}
 
-               	console.log([location.protocol, '//', location.host, location.pathname].join('') +
-               		          query_string);
+               	var general_timetable = [location.protocol, '//', location.host, location.pathname].join('') + query_string
+               	console.log(general_timetable);
+               	result_locations.push(general_timetable);
 
 
                	  //try free day slots - with full list, not anything else
@@ -796,19 +800,18 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
 
 
 				               	}
-				               	console.log([location.protocol, '//', location.host, location.pathname].join('') +
-               		          query_string);
-
+				               	var spec_timetable = [location.protocol, '//', location.host, location.pathname].join('') + query_string
+				               	console.log(spec_timetable);
+				               	result_locations.push(spec_timetable);
 
                     } catch(e) {
                         console.log("Error, " + day + " as free day not possible");
                     }
 
                 });
-
-
-               	return [location.protocol, '//', location.host, location.pathname].join('') +
-               		          query_string;
+								console.log("result locations");
+								console.log(result_locations);
+               	return result_locations;
 
 
 
