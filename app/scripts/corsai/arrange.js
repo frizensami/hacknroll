@@ -587,6 +587,27 @@ function check_clashing_exam(the_array) {
     return true;
 }
 
+function toComplexClassType(str) {
+	switch(str) {
+		case "Lecture":
+			return "[LEC]";
+		case "Seminar-Style Module Class":
+			return "[SEM]";
+		case "Tutorial":
+			return "[TUT]";
+		case "Laboratory":
+			return "[LAB]";
+		case "Sectional Teaching":
+			return "[SEC]";
+		case "Recitation":
+			return "[REC]";
+		default:
+			alert("Class type not recognized: " + str)
+			break;
+
+	}
+}
+
 
 
 function main(iYear, iSemester, iModules, iConstraint, iPacked) {
@@ -725,12 +746,33 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                 //full static passes -- LAST STOP BEFORE TRYING OPTIMIZATIONS
                 var all_mods_after_pass = static_modules.concat(dynamic_modules);
 
+                //give all timings a module code
+                all_mods_after_pass.forEach(function(mod) {
+                	mod.Timetable.forEach(function(timeSlot) {
+                		timeSlot["ModuleCode"] = mod["ModuleCode"];
+                	})
+                });
 
-                //produce_timetable(all_mods_after_pass, iPacked)
+                // RUN HERBERT MAGIC
+                var final_mods = produce_timetable(all_mods_after_pass, iPacked);
+								console.log("Modules:")
+                console.log(final_mods);
+
+                var query_string = "?";
+               	for (var i = 0; i < final_mods.length; i++) {
+               		query_string += final_mods[i]["ModuleCode"] +
+               										toComplexClassType(final_mods[i]["LessonType"]) +
+               										"=" +
+               										final_mods[i]["ClassNo"] + "&";
 
 
+               	}
+
+               	console.log([location.protocol, '//', location.host, location.pathname].join('') +
+               		          query_string);
 
 
+/*
                 //try free day slots - with full list, not anything else
                 days.forEach(function(day) {
                     console.log("Trying " + day);
@@ -746,6 +788,7 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                     }
 
                 });
+*/
 
 
 

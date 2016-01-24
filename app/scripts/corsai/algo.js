@@ -12,7 +12,7 @@ function create_timetable_array(array_of_mod_objs) {
 	for (var i = 0; i < 5; i++) {
 		timetable_array[i] = [];
 	}
-	
+
 	array_of_mod_objs.forEach(function(mod) {
 		var times = mod.Timings;
 		times.forEach(function(time) {
@@ -62,7 +62,7 @@ function produce_timetable(culled_arr_arr, tightness) {
 
 	var num_of_perms = calculate_possibilities(culled_arr_arr);
 	if (calculate_possibilities(culled_arr_arr) > perms_threshold) {
-		alert("GO FUCK YOURSELF " + num_of_perms);
+		alert("Cannot find timetable arrangement before the universe ends - permutations: " + num_of_perms);
 	} else {
 		var representative_array = new Array(culled_arr_arr.length).fill(0);
 		function next_representative(the_array) {
@@ -86,6 +86,7 @@ function produce_timetable(culled_arr_arr, tightness) {
 				return cur.Timetable[the_array[index]];
 			});
 		}
+
 		while (typeof representative_array !== "undefined") {
 			var modules = take_representative(representative_array);
 			var score = score_timetable(modules);
@@ -94,9 +95,11 @@ function produce_timetable(culled_arr_arr, tightness) {
 			}
 			representative_array = next_representative(representative_array);
 		}
+
 		console.log(score_to_be_found);
-		alert("TOO BAD LOL");
+		alert("Sorry! Could not find a configuration for your module tightness score!");
 		return undefined;
+
 	}
 }
 
