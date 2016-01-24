@@ -84,6 +84,9 @@
   </script>
 
   <script>
+
+  var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
   function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
@@ -98,23 +101,39 @@
       if ((mods.length == 0) || (mods.indexOf(match[1]) == -1)) mods.push(match[1]);
     }
 
-
+    //start time
     var e = document.getElementById("start-time");
     var start_time = e.options[e.selectedIndex].text;
 
-
+    //end time
     var e1 = document.getElementById("end-time");
     var end_time = e1.options[e1.selectedIndex].text;
+
+
 
     //ensure that no prefs are saved properly
     start_time = start_time == "No preference" ? "0800" : start_time;
     end_time = end_time == "No preference" ? "2359" : end_time;
 
     start_day_constraint = {"StartTime": "0800", "EndTime": start_time, "Type": "Hard"}
-    end_day_constraint = {"StartTime": end_time, "EndTime": 2359, "Type": "Hard"}
+    end_day_constraint = {"StartTime": end_time, "EndTime": "2359", "Type": "Hard"}
+
+    overall_constraint = [start_day_constraint, end_day_constraint];
+
+    days.forEach(function(day) {
+      var elem = document.getElementById(day);
+      var lunch_time = elem.options[elem.selectedIndex].text;
+
+      if (lunch_time != "No preference") {
+        var lunch_constraint = {"DayText": day, "StartTime": lunch_time, "EndTime": (parseInt(lunch_time) + 100).toString(), "Type": "Hard"};
+        overall_constraint.push(lunch_constraint);
+      }
+
+    });
+
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
-    console.log(main(loc[2], loc[3][3], mods.join(","), [start_day_constraint, end_day_constraint]));
+    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint));
   }
   </script>
 </head>
@@ -230,7 +249,7 @@
               <p>Monday</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id='Monday' class="selectpicker">
                 <option>No preference</option>
                 <option>1100</option>
                 <option>1200</option>
@@ -245,7 +264,7 @@
               <p>Tuesday</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id='Tuesday' class="selectpicker">
                 <option>No preference</option>
                 <option>1100</option>
                 <option>1200</option>
@@ -260,7 +279,7 @@
               <p>Wednesday</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id='Wednesday' class="selectpicker">
                 <option>No preference</option>
                 <option>1100</option>
                 <option>1200</option>
@@ -275,7 +294,7 @@
               <p>Thursday</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id='Thursday' class="selectpicker">
                 <option>No preference</option>
                 <option>1100</option>
                 <option>1200</option>
@@ -290,7 +309,7 @@
               <p>Friday</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
+              <select id='Friday' class="selectpicker">
                 <option>No preference</option>
                 <option>1100</option>
                 <option>1200</option>
