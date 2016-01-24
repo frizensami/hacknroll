@@ -64,9 +64,10 @@ function score_timetable(array_of_mod_objs) {
 function produce_timetable(culled_arr_arr, tightness) {
 
 	var num_of_mods = culled_arr_arr.length;
-	var score_to_be_found = Math.round(num_of_mods * tightness / 25);
+	var score_to_be_found = Math.round(num_of_mods * tightness / 40);
+	console.log("SCORE " + score_to_be_found);
 
-	var perms_threshold = 50000000;
+	var perms_threshold = 20000000;
 
 	var num_of_perms = calculate_possibilities(culled_arr_arr);
 	if (calculate_possibilities(culled_arr_arr) > perms_threshold) {
@@ -98,7 +99,8 @@ function produce_timetable(culled_arr_arr, tightness) {
 		while (typeof representative_array !== "undefined") {
 			var modules = take_representative(representative_array);
 			var score = score_timetable(modules);
-			if (typeof score !== "undefined" && score === score_to_be_found) {
+			if (typeof score !== "undefined" && score <= score_to_be_found + 2 && score >= score_to_be_found - 2) {
+				console.log("THE FOLLOWING SCORE IS " + score);
 				return modules;
 			}
 			representative_array = next_representative(representative_array);
