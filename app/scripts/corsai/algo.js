@@ -12,24 +12,28 @@ function create_timetable_array(array_of_mod_objs) {
 	for (var i = 0; i < 5; i++) {
 		timetable_array[i] = [];
 	}
-
+	var timetable_is_ok = true;
 	array_of_mod_objs.forEach(function(mod) {
 		var times = mod.Timings;
 		times.forEach(function(time) {
 			var day_index = day_to_num(time.DayText);
 			var processed_start = parseInt(time.StartTime) / 100 - 8;
 			var processed_end = parseInt(time.EndTime) / 100 - 8;
-			for (var i = processed_start; i < processed_end; i++) {
+			for (var i = processed_start; i < processed_end && timetable_is_ok; i++) {
 				var the_slot = timetable_array[day_index][i];
 				if (typeof the_slot !== "undefined") {
-					return undefined;
+					timetable_is_ok = false;
 				} else {
 					timetable_array[day_index][i] = true;
 				}
 			}
 		});
 	});
-	return timetable_array;
+	if (timetable_is_ok) {
+		return timetable_array;
+	} else {
+		return undefined;
+	}
 }
 
 // score_timetable: scores the timetable that is represented by array of module objects.

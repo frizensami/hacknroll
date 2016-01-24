@@ -12,24 +12,28 @@ function create_timetable_array(array_of_mod_objs) {
 	for (var i = 0; i < 5; i++) {
 		timetable_array[i] = [];
 	}
-	
+	var timetable_is_ok = true;
 	array_of_mod_objs.forEach(function(mod) {
 		var times = mod.Timings;
 		times.forEach(function(time) {
 			var day_index = day_to_num(time.DayText);
 			var processed_start = parseInt(time.StartTime) / 100 - 8;
 			var processed_end = parseInt(time.EndTime) / 100 - 8;
-			for (var i = processed_start; i < processed_end; i++) {
+			for (var i = processed_start; i < processed_end && timetable_is_ok; i++) {
 				var the_slot = timetable_array[day_index][i];
 				if (typeof the_slot !== "undefined") {
-					return undefined;
+					timetable_is_ok = false;
 				} else {
 					timetable_array[day_index][i] = true;
 				}
 			}
 		});
 	});
-	return timetable_array;
+	if (timetable_is_ok) {
+		return timetable_array;
+	} else {
+		return undefined;
+	}
 }
 
 // score_timetable: scores the timetable that is represented by array of module objects.
@@ -62,7 +66,7 @@ function produce_timetable(culled_arr_arr, tightness) {
 
 	var num_of_perms = calculate_possibilities(culled_arr_arr);
 	if (calculate_possibilities(culled_arr_arr) > perms_threshold) {
-		alert("GO FUCK YOURSELF " + num_of_perms);
+		alert("Cannot find timetable arrangement before the universe ends - permutations: " + num_of_perms);
 	} else {
 		var representative_array = new Array(culled_arr_arr.length).fill(0);
 		function next_representative(the_array) {
@@ -86,6 +90,7 @@ function produce_timetable(culled_arr_arr, tightness) {
 				return cur.Timetable[the_array[index]];
 			});
 		}
+
 		while (typeof representative_array !== "undefined") {
 			var modules = take_representative(representative_array);
 			var score = score_timetable(modules);
@@ -94,9 +99,11 @@ function produce_timetable(culled_arr_arr, tightness) {
 			}
 			representative_array = next_representative(representative_array);
 		}
+
 		console.log(score_to_be_found);
-		alert("TOO BAD LOL");
+		alert("Sorry! Could not find a configuration for your module tightness score!");
 		return undefined;
+
 	}
 }
 
