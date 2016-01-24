@@ -306,8 +306,8 @@ function cullHardConstraints(constraints, newestComputationList) {
     if (culledList["impossible"]) {
         console.log("constraints");
         console.log(constraints);
+        //alert("Unable to comply with constraints!");
         throw new Error("Unable to comply with constraints!");
-        alert("Unable to comply with constraints!");
     } else {
         //otherwise return the list
         return culledList;
@@ -662,6 +662,9 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                 //intial cull of the list - CATCH ERROR
                 initialCull = cullHardConstraints(constraints, computationList);
 
+                console.log("initial permutations");
+                    console.log(initialCull.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                        return prev * cur;}));
 
                 var static_modules = initialCull.filter(function(mod) {
                     return mod["Timetable"].length == 1;
