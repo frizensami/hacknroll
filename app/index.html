@@ -55,6 +55,7 @@
   <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <script src="/scripts/jquery.popup.min.js"></script>
+
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/css/bootstrap-select.min.css">
   <!-- Latest compiled and minified JavaScript -->
@@ -152,10 +153,18 @@
               <p>Do you want a free day?</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Yes</button>
-                <button type="button" class="btn btn-default">No</button>
-              </div>
+              <select class="selectpicker">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Do you prefer your days to be loosely packed or closely packed?</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <div id="slider"></div>
             </div>
           </div>
           <div class="form-group row">
@@ -193,6 +202,84 @@
                 <option>2100</option>
                 <option>2200</option>
                 <option>2300</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" style="text-align: center">
+            When would you like to have lunch?
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Monday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Tuesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Wednesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Thursday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Friday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
               </select>
             </div>
           </div>
