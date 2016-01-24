@@ -63,8 +63,16 @@ function score_timetable(array_of_mod_objs) {
 
 function produce_timetable(culled_arr_arr, tightness) {
 
-	var num_of_mods = culled_arr_arr.length;
-	var score_to_be_found = Math.round(num_of_mods * tightness / 40);
+	tightness = parseInt(tightness);
+	console.log("TIGHTNESS " + tightness);
+	var tightness_processed = tightness * 14;
+	if (tightness === 5) {
+		tightness_processed = 56;
+	}
+	console.log("PROCESSED " + tightness_processed);
+	var choice_constant = sum_of_possibilities(culled_arr_arr);
+	console.log("CONSTANT " + choice_constant);
+	var score_to_be_found = Math.round(tightness_processed * choice_constant / 200);
 	console.log("SCORE " + score_to_be_found);
 
 	var perms_threshold = 20000000;
@@ -99,9 +107,16 @@ function produce_timetable(culled_arr_arr, tightness) {
 		while (typeof representative_array !== "undefined") {
 			var modules = take_representative(representative_array);
 			var score = score_timetable(modules);
-			if (typeof score !== "undefined" && score <= score_to_be_found + 2 && score >= score_to_be_found - 2) {
-				console.log("THE FOLLOWING SCORE IS " + score);
-				return modules;
+			if (tightness !== 5) {
+				if (typeof score !== "undefined" && score <= score_to_be_found + 2 && score >= score_to_be_found - 2) {
+					console.log("THE FOLLOWING SCORE IS " + score);
+					return modules;
+				}
+			} else {
+				if (typeof score !== "undefined" && score > score_to_be_found + 2) {
+					console.log("THE FOLLOWING SCORE IS " + score);
+					return modules;
+				}
 			}
 			representative_array = next_representative(representative_array);
 		}
@@ -116,12 +131,23 @@ function produce_timetable(culled_arr_arr, tightness) {
 /* calculate_possibilities
  * Checks the number of possibilities (permutations) in the array of array of mod objs.
  */
+		
 function calculate_possibilities(array_of_array_of_mod_objs) {
 	var each_perms = array_of_array_of_mod_objs.map(function(array_of_mods) {
 		return array_of_mods.Timetable.length;
 	});
 	var product_of_lengths = each_perms.reduce(function(prev, cur, index, arr) {
 		return prev * cur;
+	});
+	return product_of_lengths;
+}
+
+function sum_of_possibilities(array_of_array_of_mod_objs) {
+	var each_perms = array_of_array_of_mod_objs.map(function(array_of_mods) {
+		return array_of_mods.Timetable.length;
+	});
+	var product_of_lengths = each_perms.reduce(function(prev, cur, index, arr) {
+		return prev + cur;
 	});
 	return product_of_lengths;
 }

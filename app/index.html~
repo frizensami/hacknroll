@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>NUSMods - NUS Timetable Builder</title>
+  <meta name="description" content="NUSMods provides students with a better way to plan their school timetables with a user-friendly timetable builder and also serves to be a complete knowledge bank of NUS modules by providing useful module-related information such as archived NUS CORS bidding statistics and community-driven module reviews and discussions.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Facebook Open Graph Meta Tags -->
+  <meta name="og:image" content="icon.png">
+  <meta name="og:url" content="http://nusmods.com">
+  <meta name="og:title" content="NUSMods - NUS Timetable Builder">
+  <meta name="og:description" content="NUSMods provides students with a better way to plan their school timetables with a user-friendly timetable builder and also serves to be a complete knowledge bank of NUS modules by providing useful module-related information such as archived NUS CORS bidding statistics and community-driven module reviews and discussions.">
+  <meta name="og:site_name" content="NUSMods">
+  <meta name="og:type" content="website">
+
+  <link rel="image_src" href="thumbnail.png">
+
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon-196.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon-72.png">
+  <link rel="apple-touch-icon" href="/favicon-57.png">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,700" />
+  <!-- build:css /styles/vendor.css -->
+  <link rel="stylesheet" href="/bower_components/qtip2/jquery.qtip.css" />
+  <!-- bower:css -->
+  <link rel="stylesheet" href="/bower_components/select2/select2.css" />
+  <link rel="stylesheet" href="/bower_components/animate.css/animate.min.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) /styles/main.css -->
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/modes.css">
+  <link rel="stylesheet" href="/styles/themes.css">
+  <!-- endbuild -->
+  <link rel="stylesheet" id="mode">
+
+
+  <link rel="stylesheet" href="/styles/popup.css">
+  <link rel="stylesheet" href="/styles/hacknroll.css">
+
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="/scripts/jquery.popup.min.js"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/css/bootstrap-select.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/js/bootstrap-select.min.js"></script>
+
+
+
+
+   <!-- CORS AI SCRIPTS -->
+   <script src="/scripts/corsai/algo.js"></script>
+  <script src="/scripts/corsai/arrange.js"></script>
+  <script src="/scripts/corsai/combinatorics.js"></script>
+  <script src="/scripts/corsai/mods.js"></script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-33503218-1', 'auto');
+    ga('require', 'displayfeatures');
+    ga('require', 'linkid');
+    // Comment out to prevent double counting as pageview is
+    // already sent during Backbone routing.
+    // ga('send', 'pageview');
+  </script>
+
+  <script>
+
+  var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+  //generates the timetable
+  function generate() {
+    loc = location.pathname.split("/");
+    var mods = [];
+    var regex = new RegExp("[?&](\\w+)\\[", 'g');
+    var search_str = location.search;
+
+    while (match = regex.exec(search_str)) {
+      if ((mods.length == 0) || (mods.indexOf(match[1]) == -1)) mods.push(match[1]);
+    }
+
+    //start time
+    var e = document.getElementById("start-time");
+    var start_time = e.options[e.selectedIndex].text;
+
+    //end time
+    var e1 = document.getElementById("end-time");
+    var end_time = e1.options[e1.selectedIndex].text;
+
+
+
+    //ensure that no prefs are saved properly
+    start_time = start_time == "No preference" ? "0800" : start_time;
+    end_time = end_time == "No preference" ? "2359" : end_time;
+
+    start_day_constraint = {"StartTime": "0800", "EndTime": start_time, "Type": "Hard"}
+    end_day_constraint = {"StartTime": end_time, "EndTime": "2359", "Type": "Hard"}
+
+    overall_constraint = [start_day_constraint, end_day_constraint];
+
+    days.forEach(function(day) {
+      var elem = document.getElementById(day);
+      var lunch_time = elem.options[elem.selectedIndex].text;
+
+      if (lunch_time != "No preference") {
+        var lunch_constraint = {"DayText": day, "StartTime": lunch_time, "EndTime": (parseInt(lunch_time) + 100).toString(), "Type": "Hard"};
+        overall_constraint.push(lunch_constraint);
+      }
+
+    });
+
+    //how packed the tt should be
+    var packed = document.getElementById("packed");
+    var packed_val = packed.options[packed.selectedIndex].value;
+
+    //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
+    console.log(mods.join(","));
+    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint, packed_val));
+  }
+  </script>
+</head>
+<body data-spy="scroll">
+  <div id="nm-wrapper">
+
+    <header class="nm-navbar navbar navbar-default navbar-fixed-top" id="top" role="banner">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="nm-logo nm-logo-white navbar-brand hidden-xs" href="/"></a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <form class="navbar-form" role="search"></form>
+          <button class="btn btn-default nm-bookmark-button hidden-xs">
+            <i class="fa fa-bookmark fa-lg"></i>
+          </button>
+          <a class="nm-brand nm-logo nm-logo-white navbar-brand visible-xs-inline-block" href="/"></a>
+        </div>
+        <div class="nm-current-week hidden-xs hidden-sm">
+          <span class="js-nm-current-week-text"></span>
+        </div>
+      </div>
+    </header>
+
+    <nav id="sidebar-wrapper" class="navmenu navmenu-inverse navmenu-fixed-left offcanvas" role="navigation">
+      <div id="nav">
+      </div>
+    </nav>
+
+    <div id="page-content-wrapper" class="main-container">
+      <div class="main-content">
+        <!-- <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="clearfix alert alert-info alert-dismissible js-nm-contest-alert" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              Congratulations on ending your exams! Why not take some time to write some module reviews on NUSMods? It only takes 5 minutes. Pay it forward this Christmas (:
+            </div>
+          </div>
+        </div> -->
+        <div style="margin-left: auto; margin-right: auto; text-align: center">
+          <button href="#inline" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
+        </div>
+        <div id="inline" style="display:none">
+          <div class="form-group row" style="text-align: center">
+            <label>Quickly create a timetable</label>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Do you want a free day?</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select class="selectpicker">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Do you prefer your days to be loosely packed or closely packed?</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id="packed" class="selectpicker">
+                <option value="15">Closely packed</option>
+                <option value="30">Slightly packed</option>
+                <option value="45">Balanced</option>
+                <option value="60">Slightly loose</option>
+                <option value="75">Loosely packed</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>No lessons before</p>
+            </div>
+            <div  class="col-xs-5" style="text-align: right">
+              <select id="start-time" class="selectpicker">
+                <option>No preference</option>
+                <option>0900</option>
+                <option>1000</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>No lessons after</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id="end-time" class="selectpicker">
+                <option>No preference</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+                <option>1600</option>
+                <option>1700</option>
+                <option>1800</option>
+                <option>1900</option>
+                <option>2000</option>
+                <option>2100</option>
+                <option>2200</option>
+                <option>2300</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" style="text-align: center">
+            When would you like to have lunch?
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Monday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Monday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Tuesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Tuesday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Wednesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Wednesday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Thursday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Thursday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Friday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Friday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div style="text-align: center">
+            <button onclick="generate()" class="btn btn-default">Generate Timetable</button>
+          </div>
+        </div>
+
+        <div class="content"></div>
+      </div>
+
+      <footer class="footer-container">
+        <div class="container-fluid">
+            <div class="row footer">
+              <div class="col-md-10 col-md-offset-1">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="row">
+                      <div class="col-md-6 col-xs-6">
+                        <h5 class="section-title">Product</h5>
+                        <ul>
+                          <li><a href="/help">Help</a></li>
+                          <li><a href="/contribute">Contribute</a></li>
+                          <li><a href="https://github.com/nusmodifications/nusmods-api" target="_blank">API</a></li>
+                        </ul>
+                      </div>
+                      <div class="col-md-6 col-xs-6">
+                        <h5 class="section-title">NUSMods</h5>
+                        <ul>
+                          <li><a href="/about">About</a></li>
+                          <li><a href="/team">The Team</a></li>
+                          <li><a href="http://blog.nusmods.com/" target="_blank">Blog</a></li>
+                          <li><a href="/contact">Contact Us</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <h5 class="section-title">Follow</h5>
+                        <ul class="nm-social">
+                          <li>
+                            <a href="https://www.facebook.com/NUSMods" target="_blank">
+                              <i class="fa fa-facebook-square fa-3x"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://www.twitter.com/NUSMods" target="_blank">
+                              <i class="fa fa-twitter fa-3x"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://github.com/nusmodifications/nusmods" target="_blank">
+                              <i class="fa fa-github fa-3x"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-sm-6">
+                        <h5 class="section-title">Status</h5>
+                        <ul>
+                          <li>
+                            <div class="last-update-timestamp">Information correct as at<br><span class="highlight thin" id="correct-as-at"></span></div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-10 col-md-offset-1" id="copyright">
+                <hr>
+                <p>Copyright &copy; 2016 NUSMods. All rights reserved.</p>
+              </div>
+            </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="cors-round-container alert alert-info hidden-xs">
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    <p class="cors-round-text">CORS is not available for bidding.</p>
+  </div>
+
+  <!-- build:js /scripts/main.js -->
+  <script src="/scripts/main.js"></script>
+  <!-- endbuild -->
+  <!-- build:js /scripts/disqus-count.js -->
+  <script src="/scripts/disqus-count.js"></script>
+  <!-- endbuild -->
+  <div id="fb-root"></div>
+  <script src="/scripts/hacknroll.js"></script>
+
+
+</body>
+</html>
