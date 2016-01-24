@@ -56,8 +56,16 @@
   <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <script src="/scripts/jquery.popup.min.js"></script>
 
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/css/bootstrap-select.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/js/bootstrap-select.min.js"></script>
 
-  <!-- CORS AI SCRIPTS -->
+
+
+
+   <!-- CORS AI SCRIPTS -->
+   <script src="/scripts/corsai/algo.js"></script>
   <script src="/scripts/corsai/arrange.js"></script>
   <script src="/scripts/corsai/combinatorics.js"></script>
   <script src="/scripts/corsai/mods.js"></script>
@@ -76,6 +84,9 @@
   </script>
 
   <script>
+
+  var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
   function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
   }
@@ -85,15 +96,57 @@
     var mods = [];
     var regex = new RegExp("[?&](\\w+)\\[", 'g');
     var search_str = location.search;
+
     while (match = regex.exec(search_str)) {
       if ((mods.length == 0) || (mods.indexOf(match[1]) == -1)) mods.push(match[1]);
     }
+
+    //start time
+    var e = document.getElementById("start-time");
+    var start_time = e.options[e.selectedIndex].text;
+
+    //end time
+    var e1 = document.getElementById("end-time");
+    var end_time = e1.options[e1.selectedIndex].text;
+
+
+
+    //ensure that no prefs are saved properly
+    start_time = start_time == "No preference" ? "0800" : start_time;
+    end_time = end_time == "No preference" ? "2359" : end_time;
+
+    start_day_constraint = {"StartTime": "0800", "EndTime": start_time, "Type": "Hard"}
+    end_day_constraint = {"StartTime": end_time, "EndTime": "2359", "Type": "Hard"}
+
+    overall_constraint = [start_day_constraint, end_day_constraint];
+
+    days.forEach(function(day) {
+      var elem = document.getElementById(day);
+      var lunch_time = elem.options[elem.selectedIndex].text;
+
+      if (lunch_time != "No preference") {
+        var lunch_constraint = {"DayText": day, "StartTime": lunch_time, "EndTime": (parseInt(lunch_time) + 100).toString(), "Type": "Hard"};
+        overall_constraint.push(lunch_constraint);
+      }
+
+    });
+
+    //how packed the tt should be
+    var packed = document.getElementById("packed");
+    var packed_val = packed.options[packed.selectedIndex].value;
+
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
-    console.log(main(loc[2], loc[3][3], mods.join(",")));
+<<<<<<< HEAD
+    console.log(main(loc[2], loc[3][3], mods.join(","), [start_day_constraint, end_day_constraint]));
+
+    $('.timetable_result').html("<p style='text-align: center'>Suggested Timetable</p><p style='text-align: center'><a href='#'>Timetable One</a></p><p style='text-align: center'><a href='#'>Timetable Two</a></p><p style='text-align: center'><a href='#'>Timetable Three</a></p>");
+
+=======
+    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint, packed_val));
+>>>>>>> b1e45ea4e146c4f67906457729bf36bd0eb87ce1
   }
   </script>
-
 </head>
 <body data-spy="scroll">
   <div id="nm-wrapper">
@@ -136,89 +189,159 @@
           </div>
         </div> -->
         <div style="margin-left: auto; margin-right: auto; text-align: center">
-          <button href="#inline" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
+          <button href="#user_input" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
         </div>
-        <div id="inline" style="display:none">
-<<<<<<< Updated upstream
+        <div id="user_input" style="display:none">
+          <div class="form-group row" style="text-align: center">
+            <label>Quickly create a timetable</label>
+          </div>
           <div class="form-group row">
             <div class="col-xs-7">
-              <label>Do you want a free day?</label>
-=======
-        <!-- SUPER MEGA COOL BUTTON -->
-
-            <div class="form-group">
-              <label for="exampleInputEmail1">Email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
->>>>>>> Stashed changes
+              <p>Do you want a free day?</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default">Yes</button>
-                <button type="button" class="btn btn-default">No</button>
-              </div>
+              <select class="selectpicker">
+                <option>Yes</option>
+                <option>No</option>
+              </select>
             </div>
           </div>
           <div class="form-group row">
             <div class="col-xs-7">
-              <label>No lessons before</label>
+              <p>Do you prefer your days to be loosely packed or closely packed?</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <div class="btn-group">
-                <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  No preference <span class="caret"></span>
-                </button>-->
-                <select>
-                  <option>No preference</option>
-                  <option>0900</option>
-                  <option>1000</option>
-                  <option>1100</option>
-                  <option>1200</option>
-                  <option>1300</option>
-                  <option>1400</option>
-                </select>
-              </div>
+              <select id="packed" class="selectpicker">
+                <option value="15">Closely packed</option>
+                <option value="30">Slightly packed</option>
+                <option value="45">Balanced</option>
+                <option value="60">Slightly loose</option>
+                <option value="75">Loosely packed</option>
+              </select>
             </div>
-<<<<<<< Updated upstream
           </div>
           <div class="form-group row">
             <div class="col-xs-7">
-              <label>No lessons after</label>
+              <p>No lessons before</p>
+            </div>
+            <div  class="col-xs-5" style="text-align: right">
+              <select id="start-time" class="selectpicker">
+                <option>No preference</option>
+                <option>0900</option>
+                <option>1000</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>No lessons after</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  No preference <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a href="#">No preference</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">1200</a></li>
-                  <li><a href="#">1300</a></li>
-                  <li><a href="#">1400</a></li>
-                  <li><a href="#">1500</a></li>
-                  <li><a href="#">1600</a></li>
-                  <li><a href="#">1700</a></li>
-                  <li><a href="#">1800</a></li>
-                  <li><a href="#">1900</a></li>
-                  <li><a href="#">2000</a></li>
-                  <li><a href="#">2100</a></li>
-                  <li><a href="#">2200</a></li>
-                  <li><a href="#">2300</a></li>
-                  <li><a href="#">2400</a></li>
-                </ul>
-              </div>
+              <select id="end-time" class="selectpicker">
+                <option>No preference</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+                <option>1600</option>
+                <option>1700</option>
+                <option>1800</option>
+                <option>1900</option>
+                <option>2000</option>
+                <option>2100</option>
+                <option>2200</option>
+                <option>2300</option>
+              </select>
             </div>
+          </div>
+          <div class="form-group row" style="text-align: center">
+            When would you like to have lunch?
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Monday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Monday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Tuesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Tuesday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Wednesday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Wednesday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Thursday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Thursday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-7">
+              <p>Friday</p>
+            </div>
+            <div class="col-xs-5" style="text-align: right">
+              <select id='Friday' class="selectpicker">
+                <option>No preference</option>
+                <option>1100</option>
+                <option>1200</option>
+                <option>1300</option>
+                <option>1400</option>
+                <option>1500</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="timetable_result"></div>
           </div>
           <div style="text-align: center">
-            <button type="submit" class="btn btn-default">Generate Timetable</button>
+            <button onclick="generate()" class="btn btn-default">Generate Timetable</button>
           </div>
-=======
-            <div style="text-align: center">
-              <button onclick="generate()" class="btn btn-default">Submit</button>
-            </div>
-
-      <!-- SUPER MEGA COOL BUTTON -->
->>>>>>> Stashed changes
         </div>
 
         <div class="content"></div>

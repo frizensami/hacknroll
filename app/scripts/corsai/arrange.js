@@ -614,7 +614,7 @@ function toComplexClassType(str) {
 
 
 
-function main(iYear, iSemester, iModules, iConstraint, iPacked) {
+function mainF(iYear, iSemester, iModules, iConstraint, iPacked) {
 
 	//use get request function from above to access get request header
 	var year = iYear || get('year');
@@ -811,14 +811,18 @@ function main(iYear, iSemester, iModules, iConstraint, iPacked) {
                 });
 								console.log("result locations");
 								console.log(result_locations);
-               	return result_locations;
+								var timetables_arr = result_locations;
 
-
-
-
-
-
-
+               	if (timetables_arr.length == 0) {
+               		;
+						    } else {
+						      var resp_html = "<p style='text-align: center'>Suggested Timetable</p>";
+						      for (var i = 0; i < Math.min(3, timetables_arr.length); i++) {
+						        var string_to_append = "<p style='text-align: center'><a href='" + timetables_arr[i] + "'>Timetable " + (i + 1) + "</a></p>";
+						        resp_html = resp_html + string_to_append;
+						      }
+						      $('.timetable_result').html(resp_html);
+						    }
 
 
             /*

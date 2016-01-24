@@ -1,16 +1,24 @@
 .popup { 
 	border-radius: 5px;
-	width: 400px;
+	width: 440px;
 }
-
 .btn, .btn:focus, .btn:active {
 	outline: 0 !important;
 }
-
 .form-group {
 	color: black;
 }
-
+.form_popup {
+	background-color: white;
+	color: green;
+	border: 2px solid green;
+	border-radius: 5px;
+}
+.form_popup:focus, .form_popup:hover {
+	background-color: green;
+	color: white;
+	border: 2px solid white;
+}
 /* Dropdown button for form */
 span.selectpicker {
 	display: none;

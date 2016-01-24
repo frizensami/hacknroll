@@ -137,7 +137,37 @@
 
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
-    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint, packed_val));
+    var timetables_arr = mainF(loc[2], loc[3][3], mods.join(","), overall_constraint, packed_val);
+
+    setTimeout(function() {
+      console.log("hi");
+      console.log(timetables_arr);
+    }, 2000)
+    
+/*
+    console.log("YOOOOOOOOOOOOOOOOOOOOO");
+    console.log(escape(timetables_arr));
+    if (timetables_arr.length == 0) {
+      console.log("************************************")
+      console.log("CODE NOT EXECUTED")
+      console.log("************************************")
+    } else {
+      var resp_html = "<p style='text-align: center'>Suggested Timetable</p>";
+      for (var i = 0; i < Math.min(3, timetables_arr.length); i++) {
+        var string_to_append = "<p style='text-align: center'><a href='" + timetables_arr[i] + "'>Timetable " + i + "</a></p>";
+        resp_html = resp_html + string_to_append;
+      }
+      $('.timetable_result').html(resp_html);
+      console.log("************************************")
+      console.log("************************************")
+      console.log("resp_html");
+      console.log(resp_html);
+      console.log("************************************")
+      console.log("************************************")
+    }
+    */
+
+    /*$('.timetable_result').html("<p style='text-align: center'>Suggested Timetable</p><p style='text-align: center'><a href='#'>Timetable One</a></p><p style='text-align: center'><a href='#'>Timetable Two</a></p><p style='text-align: center'><a href='#'>Timetable Three</a></p>");*/
   }
   </script>
 </head>
@@ -182,9 +212,9 @@
           </div>
         </div> -->
         <div style="margin-left: auto; margin-right: auto; text-align: center">
-          <button href="#inline" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
+          <button href="#user_input" type="submit" class="btn btn-default form_popup">Generate Timetable</button>
         </div>
-        <div id="inline" style="display:none">
+        <div id="user_input" style="display:none">
           <div class="form-group row" style="text-align: center">
             <label>Quickly create a timetable</label>
           </div>
@@ -328,6 +358,9 @@
                 <option>1500</option>
               </select>
             </div>
+          </div>
+          <div class="form-group row">
+            <div class="timetable_result"></div>
           </div>
           <div style="text-align: center">
             <button onclick="generate()" class="btn btn-default">Generate Timetable</button>
