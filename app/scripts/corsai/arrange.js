@@ -304,7 +304,10 @@ function cullHardConstraints(constraints, newestComputationList) {
 
     //if we find a false inside the array, return false
     if (culledList["impossible"]) {
+        console.log("constraints");
+        console.log(constraints);
         throw new Error("Unable to comply with constraints!");
+        alert("Unable to comply with constraints!");
     } else {
         //otherwise return the list
         return culledList;
@@ -584,94 +587,9 @@ function check_clashing_exam(the_array) {
     return true;
 }
 
-function cull(computationList) {
-    console.log("incoming computationlist");
-    console.log(computationList);
-
-    var perms_threshold = 1000000;
-
-    if (!check_clashing_exam(computationList)) {
-        console.log("Exam clash!");
-        return false;
-    } else {
-        //if (calculate_possibilities(computationList) <= perms_threshold) {
-        //  console.log("BRUTEFORCE");
-        //} else {
-
-        //Generate static timetable - all references from here
-        var static_modules = computationList.filter(function(mod) {
-            return mod["Timetable"].length == 1;
-        });
-
-        console.log("static")
-            console.log(static_modules);
-
-        //convert static modules into constraints
-        constraint_static = [];
-        static_modules.forEach(function(mod) {
-            timings = mod.Timetable[0].Timings;
-            timings.forEach(function(timing) {
-                constraint_static.push({"DayText":timing.DayText, "StartTime": timing.StartTime,
-                    "EndTime": timing.EndTime, "Type": "Hard"});
-            });
-
-        });
-
-        var dynamic_modules = computationList.filter(function(mod) {
-            return mod["Timetable"].length > 1;
-        });
-
-        console.log("Static constraints");
-        console.log(constraint_static);
-
-        //given that we have the static constraints, cull the array of array of mod objects.
-        culled_arr_arr = cullHardConstraints(constraint_static, dynamic_modules);
-        console.log("re-constrained mods");
-        console.log(culled_arr_arr);
-        //calculate the new problem size
-        console.log("new culled permutations");
-        console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-            return prev * cur;}));
-        var s = new Date().getTime();
-        console.log("start: " + s);
-        for (var i = 0; i < 200; i++) {
-            //try lunchtime free slots - with culled array
-            lunch_constraint = [{StartTime: "1200", EndTime: "1300", "Type": "Hard"}]
-            try {
-                lunch_culled = cullHardConstraints(lunch_constraint, computationList);
-                //calculate the new problem size
-                console.log("new lunch_culled permutations");
-                console.log(lunch_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-                    return prev * cur;}));
-            } catch(e) {
-                console.log("Error, lunch at this time is impossible!");
-            }
-        }
-        console.log("End: " + (new Date().getTime() - s).toString());
 
 
-        //try free day slots - with full list, not anything else
-        days.forEach(function(day) {
-            console.log("Trying " + day);
-            day_constraint = [{"StartTime": "0800", "EndTime": "2359", "Type": "Hard", "DayText": day}]
-            try {
-                day_culled = cullHardConstraints(day_constraint, computationList);
-                console.log("new day_culled permutations");
-                console.log(day_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-                    return prev * cur;}));
-
-            } catch(e) {
-                console.log("Error, " + day + " as free day not possible");
-            }
-
-        })
-
-    }
-
-
-}
-
-function main(iYear, iSemester, iModules, iConstraint) {
+function main(iYear, iSemester, iModules, iConstraint, iPacked) {
 
 	//use get request function from above to access get request header
 	var year = iYear || get('year');
@@ -796,7 +714,6 @@ function main(iYear, iSemester, iModules, iConstraint) {
                 }
 
                 console.log("DONE LA");
-
                 console.log("Static modules")
                 console.log(static_modules);
                 console.log("Dynamic modules")
@@ -804,6 +721,9 @@ function main(iYear, iSemester, iModules, iConstraint) {
 
                 //full static passes -- LAST STOP BEFORE TRYING OPTIMIZATIONS
                 var all_mods_after_pass = static_modules.concat(dynamic_modules);
+
+
+                //produce_timetable(all_mods_after_pass, iPacked)
 
 
 
@@ -823,6 +743,9 @@ function main(iYear, iSemester, iModules, iConstraint) {
                     }
 
                 });
+
+
+
 
             /*
 

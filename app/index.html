@@ -131,9 +131,13 @@
 
     });
 
+    //how packed the tt should be
+    var packed = document.getElementById("packed");
+    var packed_val = packed.options[packed.selectedIndex].value;
+
     //mods = regex.exec(location.search.substr(1)).filter(onlyUnique).join(",");
     console.log(mods.join(","));
-    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint));
+    console.log(main(loc[2], loc[3][3], mods.join(","), overall_constraint, packed_val));
   }
   </script>
 </head>
@@ -200,12 +204,12 @@
               <p>Do you prefer your days to be loosely packed or closely packed?</p>
             </div>
             <div class="col-xs-5" style="text-align: right">
-              <select class="selectpicker">
-                <option>Closely packed</option>
-                <option>Slightly packed</option>
-                <option>Balanced</option>
-                <option>Slightly loose</option>
-                <option>Loosely packed</option>
+              <select id="packed" class="selectpicker">
+                <option value="0">Closely packed</option>
+                <option value="25">Slightly packed</option>
+                <option value="50">Balanced</option>
+                <option value="75">Slightly loose</option>
+                <option value="100">Loosely packed</option>
               </select>
             </div>
           </div>
