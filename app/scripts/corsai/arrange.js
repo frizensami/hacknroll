@@ -304,6 +304,9 @@ function cullHardConstraints(constraints, newestComputationList) {
 
     //if we find a false inside the array, return false
     if (culledList["impossible"]) {
+        console.log("constraints");
+        console.log(constraints);
+        //alert("Unable to comply with constraints!");
         throw new Error("Unable to comply with constraints!");
     } else {
         //otherwise return the list
@@ -584,94 +587,34 @@ function check_clashing_exam(the_array) {
     return true;
 }
 
-function cull(computationList) {
-    console.log("incoming computationlist");
-    console.log(computationList);
+function toComplexClassType(str) {
+	switch(str) {
+		case "Lecture":
+			return "[LEC]";
+		case "Seminar-Style Module Class":
+			return "[SEM]";
+		case "Tutorial":
+			return "[TUT]";
+		case "Laboratory":
+			return "[LAB]";
+		case "Sectional Teaching":
+			return "[SEC]";
+		case "Recitation":
+			return "[REC]";
+		case "Packaged Lecture":
+			return "[PLEC]";
+		case "Packaged Tutorial":
+			return "[PTUT]";
+		default:
+			alert("Class type not recognized: " + str)
+			break;
 
-    var perms_threshold = 1000000;
-
-    if (!check_clashing_exam(computationList)) {
-        console.log("Exam clash!");
-        return false;
-    } else {
-        //if (calculate_possibilities(computationList) <= perms_threshold) {
-        //  console.log("BRUTEFORCE");
-        //} else {
-
-        //Generate static timetable - all references from here
-        var static_modules = computationList.filter(function(mod) {
-            return mod["Timetable"].length == 1;
-        });
-
-        console.log("static")
-            console.log(static_modules);
-
-        //convert static modules into constraints
-        constraint_static = [];
-        static_modules.forEach(function(mod) {
-            timings = mod.Timetable[0].Timings;
-            timings.forEach(function(timing) {
-                constraint_static.push({"DayText":timing.DayText, "StartTime": timing.StartTime,
-                    "EndTime": timing.EndTime, "Type": "Hard"});
-            });
-
-        });
-
-        var dynamic_modules = computationList.filter(function(mod) {
-            return mod["Timetable"].length > 1;
-        });
-
-        console.log("Static constraints");
-        console.log(constraint_static);
-
-        //given that we have the static constraints, cull the array of array of mod objects.
-        culled_arr_arr = cullHardConstraints(constraint_static, dynamic_modules);
-        console.log("re-constrained mods");
-        console.log(culled_arr_arr);
-        //calculate the new problem size
-        console.log("new culled permutations");
-        console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-            return prev * cur;}));
-        var s = new Date().getTime();
-        console.log("start: " + s);
-        for (var i = 0; i < 200; i++) {
-            //try lunchtime free slots - with culled array
-            lunch_constraint = [{StartTime: "1200", EndTime: "1300", "Type": "Hard"}]
-            try {
-                lunch_culled = cullHardConstraints(lunch_constraint, computationList);
-                //calculate the new problem size
-                console.log("new lunch_culled permutations");
-                console.log(lunch_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-                    return prev * cur;}));
-            } catch(e) {
-                console.log("Error, lunch at this time is impossible!");
-            }
-        }
-        console.log("End: " + (new Date().getTime() - s).toString());
-
-
-        //try free day slots - with full list, not anything else
-        days.forEach(function(day) {
-            console.log("Trying " + day);
-            day_constraint = [{"StartTime": "0800", "EndTime": "2359", "Type": "Hard", "DayText": day}]
-            try {
-                day_culled = cullHardConstraints(day_constraint, computationList);
-                console.log("new day_culled permutations");
-                console.log(day_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
-                    return prev * cur;}));
-
-            } catch(e) {
-                console.log("Error, " + day + " as free day not possible");
-            }
-
-        })
-
-    }
-
-
+	}
 }
 
-function main(iYear, iSemester, iModules, iConstraint) {
+
+
+function mainF(iYear, iSemester, iModules, iConstraint, iPacked) {
 
 	//use get request function from above to access get request header
 	var year = iYear || get('year');
@@ -724,30 +667,185 @@ function main(iYear, iSemester, iModules, iConstraint) {
 		{
 			window.clearInterval(completionChecker);
 
+            //generate the optimised computation list
 			var computationList = buildComputationList(moduleJsonList);
 			console.log("Computation List: ");
 			console.log(computationList);
 
+            //output incoming constraints from user
 			console.log("constraints");
-			console.log(constraints);
+			console.log(constraints); //start time, end time, lunch time constraints
 
+
+
+            //check for clash
+            if (!check_clashing_exam(computationList)) {
+                console.log("Exam clash!");
+                return false;
+            } else {
+
+                //intial cull of the list - CATCH ERROR
+                initialCull = cullHardConstraints(constraints, computationList);
+
+                console.log("initial permutations");
+                    console.log(initialCull.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                        return prev * cur;}));
+
+                var static_modules = initialCull.filter(function(mod) {
+                    return mod["Timetable"].length == 1;
+                });
+
+
+                var while_static_modules = static_modules.map(function(x) { return x; });
+                //dynamic modules to apply to
+                var dynamic_modules = initialCull.filter(function(mod) {
+                    return mod["Timetable"].length > 1;
+                });
+
+                while (while_static_modules.length > 0) {
+                    console.log("WE ARE LOOP");
+                    iterConstraints = [];
+
+                    //GENERATE STATIC CONSTRAINTS - push to constraints array
+                    while_static_modules.forEach(function(mod) {
+                        timings = mod.Timetable[0].Timings;
+                        timings.forEach(function(timing) {
+                          iterConstraints.push({"DayText":timing.DayText, "StartTime": timing.StartTime,
+                                "EndTime": timing.EndTime, "Type": "Hard"});
+                        });
+
+                    });
+
+
+
+                    //given that we have the static constraints, cull the array of array of mod objects.
+                    culled_arr_arr = cullHardConstraints(iterConstraints, dynamic_modules);
+
+                    console.log("re-constrained mods pass");
+                    console.log(culled_arr_arr);
+                    //calculate the new problem size
+                    console.log("new culled permutations pass");
+                    console.log(culled_arr_arr.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                        return prev * cur;}));
+
+                    while_static_modules = culled_arr_arr.filter(function(mod) {
+                        return mod["Timetable"].length == 1;
+                    });
+
+                    static_modules = static_modules.concat(while_static_modules);
+
+                    dynamic_modules = culled_arr_arr.filter(function(mod) {
+                        return mod["Timetable"].length > 1;
+                    });
+
+
+                }
+
+                console.log("DONE LA");
+                console.log("Static modules")
+                console.log(static_modules);
+                console.log("Dynamic modules")
+                console.log(dynamic_modules);
+
+                //full static passes -- LAST STOP BEFORE TRYING OPTIMIZATIONS
+                var all_mods_after_pass = static_modules.concat(dynamic_modules);
+
+                //give all timings a module code
+                all_mods_after_pass.forEach(function(mod) {
+                	mod.Timetable.forEach(function(timeSlot) {
+                		timeSlot["ModuleCode"] = mod["ModuleCode"];
+                	})
+                });
+
+                //array of timetable strings
+                var result_locations = [];
+
+                // RUN HERBERT MAGIC
+                var final_mods = produce_timetable(all_mods_after_pass, iPacked);
+								console.log("Modules:")
+                console.log(final_mods);
+
+                var query_string = "?";
+               	for (var i = 0; i < final_mods.length; i++) {
+               		query_string += final_mods[i]["ModuleCode"] +
+               										toComplexClassType(final_mods[i]["LessonType"]) +
+               										"=" +
+               										final_mods[i]["ClassNo"] + "&";
+
+
+               	}
+
+               	var general_timetable = [location.protocol, '//', location.host, location.pathname].join('') + query_string
+               	console.log(general_timetable);
+               	result_locations.push(general_timetable);
+
+
+               	  //try free day slots - with full list, not anything else
+                days.forEach(function(day) {
+                    console.log("Trying " + day);
+                    day_constraint = [{"StartTime": "0800", "EndTime": "2359", "Type": "Hard", "DayText": day}]
+                    try {
+                        day_culled = cullHardConstraints(day_constraint, all_mods_after_pass);
+                        console.log("new day_culled permutations");
+                        console.log(day_culled.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
+                            return prev * cur;}));
+
+                        var final_mods_day = produce_timetable(day_culled, iPacked);
+                        var query_string = "?";
+				               	for (var i = 0; i < final_mods_day.length; i++) {
+				               		query_string += final_mods_day[i]["ModuleCode"] +
+				               										toComplexClassType(final_mods_day[i]["LessonType"]) +
+				               										"=" +
+				               										final_mods_day[i]["ClassNo"] + "&";
+
+
+				               	}
+				               	var spec_timetable = [location.protocol, '//', location.host, location.pathname].join('') + query_string
+				               	console.log(spec_timetable);
+				               	result_locations.push(spec_timetable);
+
+                    } catch(e) {
+                        console.log("Error, " + day + " as free day not possible");
+                    }
+
+                });
+								console.log("result locations");
+								console.log(result_locations);
+								var timetables_arr = result_locations;
+
+               	if (timetables_arr.length == 0) {
+               		;
+						    } else {
+						      var resp_html = "<p style='text-align: center'>Suggested Timetable</p>";
+						      for (var i = 0; i < Math.min(3, timetables_arr.length); i++) {
+						        var string_to_append = "<p style='text-align: center'><a href='" + timetables_arr[i] + "'>Timetable " + (i + 1) + "</a></p>";
+						        resp_html = resp_html + string_to_append;
+						      }
+						      $('.timetable_result').html(resp_html);
+						    }
+
+
+            /*
+
+            //with user constraints - remove stuff from list (round 1)
 			console.log("With constraints");
 			var culledList = cullHardConstraints(constraints, computationList)
 				console.log(culledList);
 
-			//constraints loose enoug
+			//constraints loose enough
 			if (culledList != false) {
 				console.log("permutations");
 				console.log(culledList.map(function(x) { return x["Timetable"].length }).reduce(function(prev, cur) {
 					return prev * cur;}));
 
-				console.log("producing timetable");
+				console.log("culling ");
                 console.log(cull(culledList));
 				//console.log(produce_timetable(culledList));
 			} else {
 				console.log("Error! Constraints too tight.")
 					throw new Error("Constraints too tight");
 			}
+            */
 
 
 
@@ -778,7 +876,8 @@ function main(iYear, iSemester, iModules, iConstraint) {
 			   console.log(someshit);
 			   */
 
-		}
+		  }
+        }
 	},1);
 
 	//-------------------MAIN END-------------------------------//
