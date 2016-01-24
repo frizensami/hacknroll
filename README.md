@@ -1,10 +1,6 @@
-# [NUSMods](http://nusmods.com) [![Code Climate](http://img.shields.io/codeclimate/github/nusmodifications/nusmods.svg)](https://codeclimate.com/github/nusmodifications/nusmods) [![Dependency Status](http://img.shields.io/david/nusmodifications/nusmods.svg)](https://david-dm.org/nusmodifications/nusmods) [![devDependency Status](http://img.shields.io/david/dev/nusmodifications/nusmods.svg)](https://david-dm.org/nusmodifications/nusmods#info=devDependencies)
-[![ghit.me](https://ghit.me/badge.svg?repo=nusmodifications/nusmods)](https://ghit.me/repo/nusmodifications/nusmods)
+# [NUSMods - Modified with CORSAI](http://nusmods.com)
 
-## Talk to us!
-
-- Gitter: [![Join the chat at https://gitter.im/nusmodifications/nusmods](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nusmodifications/nusmods?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-- HipChat: [NUSMods Dev HipChat](https://www.hipchat.com/g3JuQhjNj)
+## A fork of NUSMods with an automatic timetable arranging function. Just what you always wanted! Just click the Generate Timetable button on the home page, and choose your options!
 
 ## Setup with Vagrant
 
