@@ -1,0 +1,152 @@
+	<div class="form-group row" style="text-align: center">
+		<label>Quickly create a timetable</label>
+	</div>
+	<!--
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Do you want a free day?</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select class="selectpicker">
+				<option>Yes</option>
+				<option>No</option>
+			</select>
+		</div>
+	</div>
+	-->
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Do you prefer your days to be loosely packed or closely packed?</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id="packed" class="selectpicker">
+				<option value="1">Closely packed</option>
+				<option value="2">Slightly packed</option>
+				<option value="3">Balanced</option>
+				<option value="4">Slightly loose</option>
+				<option value="5">Loosely packed</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>No lessons before</p>
+		</div>
+		<div  class="col-xs-5" style="text-align: right">
+			<select id="start-time" class="selectpicker">
+				<option>No preference</option>
+				<option>0900</option>
+				<option>1000</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>No lessons after</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id="end-time" class="selectpicker">
+				<option>No preference</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+				<option>1600</option>
+				<option>1700</option>
+				<option>1800</option>
+				<option>1900</option>
+				<option>2000</option>
+				<option>2100</option>
+				<option>2200</option>
+				<option>2300</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row" style="text-align: center">
+		When would you like to have lunch?
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Monday</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id='Monday' class="selectpicker">
+				<option>No preference</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Tuesday</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id='Tuesday' class="selectpicker">
+				<option>No preference</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Wednesday</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id='Wednesday' class="selectpicker">
+				<option>No preference</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Thursday</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id='Thursday' class="selectpicker">
+				<option>No preference</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-7">
+			<p>Friday</p>
+		</div>
+		<div class="col-xs-5" style="text-align: right">
+			<select id='Friday' class="selectpicker">
+				<option>No preference</option>
+				<option>1100</option>
+				<option>1200</option>
+				<option>1300</option>
+				<option>1400</option>
+				<option>1500</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="timetable_result"></div>
+	</div>
+	<div style="text-align: center">
+		<button onclick="generate()" class="btn btn-default">Generate Timetable</button>
+	</div>

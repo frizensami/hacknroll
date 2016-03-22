@@ -7,6 +7,7 @@ var ExportView = require('./ExportView');
 var Marionette = require('backbone.marionette');
 var SelectView = require('./SelectView');
 var CORSAIView = require('./CORSAIView');
+var CORSAIPopupView = require('./CORSAIPopupView');
 var SemesterSelectorView = require('./SemesterSelectorView');
 var SharedTimetableControlsView = require('./SharedTimetableControlsView');
 var ShowHideView = require('./ShowHideView');
@@ -25,6 +26,7 @@ module.exports = Marionette.LayoutView.extend({
     exportRegion: '.export-region',
     selectRegion: '.select-region',
     corsAIRegion: '.corsai-region',
+    corsaipopupRegion: '#user_input',
     semesterSelectorRegion: '.semester-selector-region',
     sharedTimetableControlsRegion: '.shared-timetable-controls-region',
     showHideRegion: '.show-hide-region',
@@ -63,8 +65,11 @@ module.exports = Marionette.LayoutView.extend({
     this.semesterSelectorRegion.show(new SemesterSelectorView({
       semester: this.semester
     }));
-    this.corsAIRegion.show(new CORSAIView({
-      collection: this.selectedModules
+    this.corsAIRegion.show(new CORSAIView());
+    this.corsaipopupRegion.show(new CORSAIPopupView({
+      academicYear: this.academicYear,
+      collection: this.selectedModules,
+      semester: this.semester
     }));
     this.showHideRegion.show(new ShowHideView());
     this.timetableRegion.show(new TimetableView({collection: this.timetable}));

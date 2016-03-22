@@ -11,14 +11,19 @@ module.exports = Marionette.ItemView.extend({
   template: template,
 
   events: {
-    'click a': 'onClick'
+    'click button': 'onClick'
+  },
+
+  onShow: function() {
+
   },
 
   onClick: function (event) {
-    return false;
+    //console.log(this.options.collection.models)
+    return true;
   },
 
   initialize: function(options) {
-    this.options = options;
+    //this.options = options;
   },
 });
